@@ -401,8 +401,30 @@ type 'a graph = { vertices : 'a list; edges : ('a * 'a) list }
 
 (* Question 75 *)
 
-
-
+let queens'Positions n =
+  (* If the Queen at (x1, y1) conflicts with another Queen at (x2, y2). *)
+  let helper1 (x1, y1) (x2, y2) = ( (not (x1 = x2)) && (not (y1 = y2))
+    && (not (x2-x1 = y2-y1)) && (not (x2-x1 = y1-y2)) )
+  in
+    (* If the list of Queens at positions in l are valid. *)
+    let rec helper2 l = ( match l with
+      | [] -> true
+      | (x, y)::xs -> let z = (List.map (fun z -> helper1 (x, y) z) xs)
+        in
+          (List.fold_left (&&) true z) && (helper2 xs) )
+    in
+      (* Computes the positions of the Queens using Continuations. *)
+      let rec helper3 (k, l) acc
+        (scCont: (int * int) list -> (int * int) list)
+        (flCont: unit -> (int * int) list) = if (k < n)
+          then ( if (l < n)
+            then ( helper3 (k+1, l) ((k, l)::acc)
+            (fun acc' -> acc'@(helper3 (k+1, l) ((k, l)::acc) scCont flCont))
+            (fun () -> [] ) )
+            else ( [] ) )
+          else ( if (helper2 acc) then (scCont acc) else (flCont ()) )
+in
+  []
 
 
 
