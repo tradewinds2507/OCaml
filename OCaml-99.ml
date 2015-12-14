@@ -397,6 +397,36 @@ type 'a graph = { vertices : 'a list; edges : ('a * 'a) list }
 
 
 
+type ('a, 'b) labeled_graph = { vertices : 'a list; edges : ('a * 'a * 'b) list }
+
+(* Question 73 *)
+
+let isBipartite (g: 'a graph) =
+  let rec helper1 v acc = ( match v with
+    | [] -> acc
+    | x::xs -> helper1 xs ((x, 0)::acc) )
+  in
+    let rec helper2 e f acc = ( match e with
+      | [] -> acc
+      | (x, y)::xs -> if (List.mem (x, 0) acc)
+          then helper2 e f ((x, 1)::(List.remove_assoc x acc))
+          else ( if (List.mem (y, 0) acc)
+              then helper2 xs f ((y, f (List.assoc x acc))::(List.remove_assoc y acc))
+              else helper2 xs f acc ) )
+    in
+      let rec helper3 e l acc = ( match e with
+        | [] -> acc
+        | (x, y)::xs -> helper3 xs l ((not (List.assoc y l = List.assoc x l))::acc) )
+      in
+        let (g', f) = ((helper1 g.vertices []), (fun c -> if c = 1 then 2 else 1))
+        in
+          let cl = (helper3 g.edges (helper2 g.edges f g') [])
+in
+  List.fold_left (&&) true cl
+
+
+
+
 (* Miscellaneous Problems *)
 
 (* Question 75 *)
@@ -414,17 +444,19 @@ let queens'Positions n =
           (List.fold_left (&&) true z) && (helper2 xs) )
     in
       (* Computes the positions of the Queens using Continuations. *)
-      let rec helper3 (k, l) acc
-        (scCont: (int * int) list -> (int * int) list)
-        (flCont: unit -> (int * int) list) = if (k < n)
+      let rec helper3 (k, l) acc (* (k, l) is the position of last kept Queen *)
+        (scCont: (int * int) list -> (int * int) list list)
+        (flCont: unit -> (int * int) list list) = if (k < n)
           then ( if (l < n)
-            then ( helper3 (k+1, l) ((k, l)::acc)
-            (fun acc' -> acc'@(helper3 (k+1, l) ((k, l)::acc) scCont flCont))
-            (fun () -> [] ) )
-            else ( [] ) )
+            then (                helper3 (k+1, l+1) ((k+1, l+1)::acc)
+              (fun acc' -> acc'::(helper3 (k+1, l+1) ((k+1, l+1)::acc) scCont flCont))
+              (fun () ->          helper3 (k+1, l+1) ((k+1, l+1)::acc) scCont flCont) )
+            else (                helper3 (k+1, 0) ((k+1, 0)::acc) 
+              (fun acc' -> acc'::(helper3 (k+1, 0) ((k+1, 0)::acc) scCont flCont))
+              (fun () ->          helper3 (k+1, 0) ((k+1, 0)::acc) scCont flCont) ) )
           else ( if (helper2 acc) then (scCont acc) else (flCont ()) )
 in
-  []
+  helper3 (1, 1) [] (fun x -> x::[]) (fun () -> [])
 
 
 
