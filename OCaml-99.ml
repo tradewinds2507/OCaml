@@ -261,4 +261,154 @@ let huffman fs =
 
 
 
+(* Binary Trees *)
+
+type 'a binary_tree =
+  | Empty
+  | Node of 'a * 'a binary_tree * 'a binary_tree
+
+(* Quesion 44 *)
+
+
+
+
+(* Question 46 *)
+
+let rec construct l =
+  let rec helper1 t x = ( match t with
+    | Empty -> Node (x, Empty, Empty)
+    | Node (y, l, r) -> ( if x = y then Node (y, l, r) else if x < y
+        then Node (y, helper1 l x, r)
+        else Node (y, l, helper1 r x) ) )
+  in
+    let rec helper2 l acc = ( match l with
+      | [] -> acc
+      | x::ls -> helper2 ls (helper1 acc x) )
+in
+  helper2 l Empty
+
+let isSymmetric t = 
+  let rec helper (l, r) = ( match l, r with
+    | Empty, Empty -> true
+    | Node (y, l1, r1), Node (z, l2, r2) ->
+      (helper (l1, l2)) && (helper (r1, r2))
+    | _, _ -> false )
+in
+  ( match t with
+    | Empty -> true
+    | Node (_, l, r) -> helper (l, r) )
+
+
+
+
+(* Question 47 *)
+
+
+
+
+(* Question 50 *)
+
+let countLeaves t =
+  let c = ref 0 in
+    let rec helper t = ( match t with
+      | Empty -> ()
+      | Node (_, Empty, Empty) -> c := (!c+1)
+      | Node (_, l, r) -> helper l; helper r )
+in
+  helper t; !c
+
+
+
+
+(* Question 51 *)
+
+let internals t =
+  let rec helper t acc = ( match t with
+    | Empty -> acc
+    | Node (_, Empty, Empty) -> acc
+    | Node (x, l, r) -> helper r (helper l acc@[x]) )
+in
+  helper t []
+
+
+
+
+(* Question 52 *)
+
+let atLevel t l =
+  let rec helper t l acc = ( match t, l with
+    | Empty, _ -> acc
+    | Node (x, l, r), 1 -> acc@[x]
+    | Node (_, l, r), l' -> if (l' > 1)
+        then helper r (l'-1) (helper l (l'-1) acc)
+        else acc )
+in
+  helper t l []
+
+
+
+
+(* Question 56 *)
+
+let rec string_of_tree (t: 'a binary_tree) (f: 'a -> string) = match t with
+  | Empty -> ""
+  | Node (x, Empty, Empty) -> f x
+  | Node (x, l, r) ->
+    let (p, q) = (string_of_tree l f, string_of_tree r f)
+    in
+      (f x) ^ "(" ^ p ^ "," ^ q ^ ")"
+
+
+
+
+(* Question 57 *)
+
+let rec preorder (t: 'a binary_tree) (f: 'a -> string) = match t with
+  | Empty -> ""
+  | Node (x, l, r) -> (f x) ^ (preorder l f) ^ (preorder r f)
+
+let rec inorder (t: 'a binary_tree) (f: 'a -> string) = match t with
+   | Empty -> ""
+   | Node (x, l, r) -> (inorder l f) ^ (f x) ^ (inorder r f)
+
+let rec postorder (t: 'a binary_tree) (f: 'a -> string) = match t with
+    | Empty -> ""
+    | Node (x, l, r) -> (postorder l f) ^ (postorder r f) ^ (f x)
+
+
+
+
+(* Multiway Trees *)
+
+type 'a mult_tree = T of 'a * 'a mult_tree list
+
+(* Look at dict.ml in tradewinds2507/COMP302hw3 *)
+
+
+
+
+(* Graphs *)
+
+type 'a graph = { vertices : 'a list; edges : ('a * 'a) list }
+
+(* Question 65 *)
+(* Path from one node to another *)
+
+
+
+
+(* Miscellaneous Problems *)
+
+(* Question 75 *)
+
+
+
+
+
+
+
+
+
+
+
 
