@@ -527,6 +527,43 @@ in
 
 
 
+(* Question 81 *)
+
+let fullWords n =
+  let rec helper n acc = if n > 0
+      then ( match (n mod 10) with
+        | 0 -> helper (n/10) ("-zero"^acc)
+        | 1 -> helper (n/10) ("-one"^acc) 
+        | 2 -> helper (n/10) ("-two"^acc) 
+        | 3 -> helper (n/10) ("-three"^acc) 
+        | 4 -> helper (n/10) ("-four"^acc) 
+        | 5 -> helper (n/10) ("-five"^acc) 
+        | 6 -> helper (n/10) ("-six"^acc) 
+        | 7 -> helper (n/10) ("-seven"^acc) 
+        | 8 -> helper (n/10) ("-eight"^acc) 
+        | 9 -> helper (n/10) ("-nine"^acc) 
+        | _ -> acc )
+      else acc
+in
+  helper n ""
+
+
+
+
+(* Question 84 *)
+
+let nonogram l1 l2 =
+l1
+
+
+
+
+
+
+
+
+
+
 
 
 
