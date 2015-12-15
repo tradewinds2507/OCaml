@@ -388,7 +388,7 @@ in
 
 
 
-(* Question 51 *)
+(* Question 52 *)
 
 let internals t =
   let rec helper t acc = ( match t with
@@ -401,7 +401,7 @@ in
 
 
 
-(* Question 52 *)
+(* Question 53 *)
 
 let atLevel t l =
   let rec helper t l acc = ( match t, l with
@@ -416,7 +416,7 @@ in
 
 
 
-(* Question 56 *)
+(* Question 58 *)
 
 let rec string_of_tree (t: 'a binary_tree) (f: 'a -> string) = match t with
   | Empty -> ""
@@ -429,7 +429,7 @@ let rec string_of_tree (t: 'a binary_tree) (f: 'a -> string) = match t with
 
 
 
-(* Question 57 *)
+(* Question 59 *)
 
 let rec preorder (t: 'a binary_tree) (f: 'a -> string) = match t with
   | Empty -> ""
@@ -459,7 +459,7 @@ type 'a mult_tree = T of 'a * 'a mult_tree list
 
 type 'a graph = { vertices : 'a list; edges : ('a * 'a) list }
 
-(* Question 65 *)
+(* Question 67 *)
 (* Path from one node to another *)
 
 
@@ -467,7 +467,7 @@ type 'a graph = { vertices : 'a list; edges : ('a * 'a) list }
 
 type ('a, 'b) labeled_graph = { vertices : 'a list; edges : ('a * 'a * 'b) list }
 
-(* Question 73 *)
+(* Question 75 *)
 
 let isBipartite (g: 'a graph) =
   let rec helper1 v acc = ( match v with
@@ -495,7 +495,7 @@ in
 
 (* Miscellaneous Problems *)
 
-(* Question 75 *)
+(* Question 77 *)
 
 let queens'Positions n =
   (* If the Queen at (x1, y1) conflicts with another Queen at (x2, y2). *)
