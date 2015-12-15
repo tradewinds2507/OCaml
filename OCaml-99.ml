@@ -165,6 +165,74 @@ in
 
 (* Question 33 *)
 
+let factors n =
+  let rec helper n k acc = if (n > 1) 
+      then ( if (n mod k = 0) && (isPrime k)
+        then helper (n/k) k (acc@[k])
+        else helper n (k+1) acc )
+      else acc
+in
+  helper n 2 []
+
+
+
+
+(* Question 34 *)
+
+let factors2 n =
+  let rec helper1 n k acc = ( if (n mod k = 0) then helper1 (n/k) k (acc+1) else acc )
+  in
+    let rec helper2 n k acc = ( if (n > 1)
+        then ( if (n mod k = 0) && (isPrime k)
+          then ( let m = helper1 n k 0
+           in
+             let rec p x y acc = if y > 0 then p x (y-1) (acc*x) else acc
+             in
+               helper2 (n/p k m 1) (k+1) (acc@[(k, m)]) )
+          else helper2 n (k+1) acc )
+        else acc )
+in
+  helper2 n 2 []
+
+
+
+
+(* Question 35 *)
+
+let phi_improved n =
+  let rec helper l acc = ( match l with
+    | [] -> acc
+    | (x, y)::ls -> 
+      let rec p x y acc = if y > 0 then p x (y-1) (acc*x) else acc
+      in
+        helper ls (acc*(x-1)*(p x (y-1) 1)) )
+in
+  helper (factors2 n) 1
+
+
+
+
+(* Question 36 *)
+
+let timeit f x : float =
+  let it = Sys.time ()
+  in
+    ignore(f x); let ft = Sys.time ()
+in
+  (ft-.it)
+
+
+
+
+(* Question 37 *)
+
+let all_primes lower upper =
+  let rec helper l u acc = if (l < u)
+      then ( if isPrime l then helper (l+1) u (acc@[l]) else helper (l+1) u acc )
+      else acc
+in
+  helper lower upper []
+
 
 
 
