@@ -408,21 +408,19 @@ let isBipartite (g: 'a graph) =
   in
     let rec helper2 e f acc = ( match e with
       | [] -> acc
-      | (x, y)::xs -> if (List.mem (x, 0) acc)
-          then helper2 e f ((x, 1)::(List.remove_assoc x acc))
-          else ( if (List.mem (y, 0) acc)
-              then helper2 xs f ((y, f (List.assoc x acc))::(List.remove_assoc y acc))
-              else helper2 xs f acc ) )
+      | (x, y)::xs -> ( match List.assoc x acc, List.assoc y acc with
+        | 0, 0 -> helper2 xs f ((x, 1)::(y, 2)::(List.remove_assoc x (List.remove_assoc y acc)))
+        | 0, c -> helper2 ((x, List.assoc x xs)::(List.remove_assoc x xs)) f ((x, f c)::(List.remove_assoc x acc))
+        | c, 0 -> helper2 ((y, List.assoc y xs)::(List.remove_assoc y xs)) f ((y, f c)::(List.remove_assoc y acc))
+        | _, _ -> helper2 xs f acc ) )
     in
       let rec helper3 e l acc = ( match e with
         | [] -> acc
-        | (x, y)::xs -> helper3 xs l ((not (List.assoc y l = List.assoc x l))::acc) )
+        | (x, y)::xs -> helper3 xs l ((not (List.assoc x l = List.assoc y l)) && acc) )
       in
         let (g', f) = ((helper1 g.vertices []), (fun c -> if c = 1 then 2 else 1))
-        in
-          let cl = (helper3 g.edges (helper2 g.edges f g') [])
 in
-  List.fold_left (&&) true cl
+  (helper3 g.edges (helper2 g.edges f g') true)
 
 
 
